@@ -51,7 +51,7 @@ Consultas sobre una tabla
     aparecer en dos columnas, una mostrará únicamente los dígitos del nif y la
     otra la letra.
     `SELECT REGEXP_REPLACE(nif,'[^0-9]','') as Numero,REGEXP_REPLACE(nif,'[0-9]','') AS 'LETRAS NIF' FROM empleado;`
-    
+
     ![alt text](image-4.png)
 
 11. Lista el nombre de cada departamento y el valor del presupuesto actual del
@@ -130,39 +130,88 @@ Consultas sobre una tabla
     ![alt text](image-17.png)
 24. Devuelve una lista con el nombre de los departamentos que no tienen un
     presupuesto entre 100000 y 200000 euros. Sin utilizar el operador BETWEEN.
-    `SELECT nombre, 
+
+    `SELECT nombre, presupuesto FROM departamento WHERE presupuesto<= 10000 OR presupuesto>=200000;`
+
+    ![alt text](image-18.png)
 25. Devuelve una lista con el nombre de los departamentos que tienen un
     presupuesto entre 100000 y 200000 euros. Utilizando el operador BETWEEN.
 
+    `SELECT nombre,presupuesto FROM departamento WHERE presupuesto BETWEEN 100000 AND 200000;`
+
+    ![alt text](image-19.png)
 26. Devuelve una lista con el nombre de los departamentos que no tienen un
     presupuesto entre 100000 y 200000 euros. Utilizando el operador BETWEEN.
+    `SELECT nombre,presupuesto FROM departamento WHERE presupuesto NOT BETWEEN 100000 AND 200000;`
+
+    ![alt text](image-20.png)
 
 27. Devuelve una lista con el nombre de los departamentos, gastos y
     presupuesto, de aquellos departamentos donde los gastos sean mayores
     que el presupuesto del que disponen.
 
+    `SELECT nombre, gastos, presupuesto FROM departamento WHERE gastos>presupuesto;`
+
+    ![alt text](image-21.png)
+
 28. Devuelve una lista con el nombre de los departamentos, gastos y
     presupuesto, de aquellos departamentos donde los gastos sean menores
     que el presupuesto del que disponen.
+
+    `SELECT nombre,gastos,presupuesto FROM departamento WHERE gastos<presupuesto;`
+
+    ![alt text](image-22.png)
 
 29. Devuelve una lista con el nombre de los departamentos, gastos y
     presupuesto, de aquellos departamentos donde los gastos sean iguales al
     presupuesto del que disponen.
 
+    `SELECT nombre, gastos, presupuesto FROM departamento WHERE gastos = Presupuesto;`
+
+    ![alt text](image-23.png)
+
 30. Lista todos los datos de los empleados cuyo segundo apellido sea NULL.
+
+    `SELECT id, nif, nombre, apellido1, apellido2, id_departamento FROM empleado WHERE apellido2 IS NULL;`
+
+    ![alt text](image-24.png)
 
 31. Lista todos los datos de los empleados cuyo segundo apellido no sea NULL.
 
+    `SELECT id, nif, nombre, apellido1, apellido2, id_departamento FROM empleado WHERE apellido2 IS NOT NULL;`
+
+    ![alt text](image-25.png)
+
 32. Lista todos los datos de los empleados cuyo segundo apellido sea López.
+
+    `SELECT id, nif, nombre, apellido1, apellido2, id_departamento FROM empleado WHERE apellido2 = 'López';`
+
+    ![alt text](image-26.png)
 
 33. Lista todos los datos de los empleados cuyo segundo apellido
     sea Díaz o Moreno. Sin utilizar el operador IN.
 
+    `SELECT id, nif, nombre, apellido1, apellido2, id_departamento FROM empleado WHERE apellido2 = 'López' OR apellido2='Moreno';`
+
+    ![alt text](image-27.png)
+
 34. Lista todos los datos de los empleados cuyo segundo apellido
     sea Díaz o Moreno. Utilizando el operador IN.
 
+    `SELECT id, nif, nombre, apellido1, apellido2, id_departamento FROM empleado WHERE apellido2 IN ('López');`
+
+    ![alt text](image-28.png)
+    
 35. Lista los nombres, apellidos y nif de los empleados que trabajan en el
     departamento 3.
 
+    `SELECT nombre,apellido1,apellido2, nif,id_departamento FROM empleado WHERE id_departamento = 3;`
+
+    ![alt text](image-29.png)
+
 36. Lista los nombres, apellidos y nif de los empleados que trabajan en los
     departamentos 2, 4 o 5.
+
+     `SELECT nombre,apellido1,apellido2, nif,id_departamento FROM empleado WHERE id_departamento IN (2,4,5);`
+
+     ![alt text](image-30.png)
