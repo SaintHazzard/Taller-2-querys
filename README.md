@@ -215,3 +215,207 @@ Consultas sobre una tabla
      `SELECT nombre,apellido1,apellido2, nif,id_departamento FROM empleado WHERE id_departamento IN (2,4,5);`
 
      ![alt text](image-30.png)
+
+Consultas multitabla (Composición interna)
+Resuelva todas las consultas utilizando la sintaxis de SQL1 y SQL2.
+
+1. Devuelve un listado con los empleados y los datos de los departamentos
+donde trabaja cada uno.
+
+`SELECT E.nombre,E.apellido1,D.nombre as departamento,D.presupuesto FROM empleado as E INNER JOIN departamento as D ON E.id_departamento = D.id;`
+
+![alt text](image-31.png)
+
+
+2. Devuelve un listado con los empleados y los datos de los departamentos
+donde trabaja cada uno. Ordena el resultado, en primer lugar por el nombre
+del departamento (en orden alfabético) y en segundo lugar por los apellidos
+y el nombre de los empleados.
+
+`SELECT D.nombre as departamento, E.nombre,E.apellido1,D.presupuesto FROM empleado as E INNER JOIN departamento as D ON E.id_departamento = D.id ORDER BY departamento,E.apellido1,E.apellido2,E.nombre;`
+
+![alt text](image-32.png)
+3. Devuelve un listado con el identificador y el nombre del departamento,
+solamente de aquellos departamentos que tienen empleados.
+
+`SELECT DISTINCT D.id, D.nombre FROM departamento AS D INNER JOIN empleado AS E ON D.id = E.id_departamento;`
+
+![alt text](image-33.png)
+4. Devuelve un listado con el identificador, el nombre del departamento y el
+valor del presupuesto actual del que dispone, solamente de aquellos
+departamentos que tienen empleados. El valor del presupuesto actual lo
+puede calcular restando al valor del presupuesto inicial
+(columna presupuesto) el valor de los gastos que ha generado
+(columna gastos).
+
+`SELECT DISTINCT D.id, D.nombre,(D.presupuesto - D.gastos) FROM departamento AS D INNER JOIN empleado AS E ON D.id = E.id_departamento;`
+
+![alt text](image-34.png)
+5. Devuelve el nombre del departamento donde trabaja el empleado que tiene
+el nif 38382980M.
+
+`SELECT  D.nombre as Departamento ,E.nombre AS Nombre_Empleado  FROM departamento AS D INNER JOIN empleado AS E ON D.id = E.id_departamento WHERE E.nif='38382980M';`
+
+![alt text](image-35.png)
+
+6. Devuelve el nombre del departamento donde trabaja el empleado Pepe Ruiz
+Santana.
+
+`SELECT  D.nombre as Departamento ,E.nombre AS Nombre_Empleado  FROM departamento AS D INNER JOIN empleado AS E ON D.id = E.id_departamento WHERE E.nombre='Pepe';`
+
+![alt text](image-36.png)
+
+7. Devuelve un listado con los datos de los empleados que trabajan en el
+departamento de I+D. Ordena el resultado alfabéticamente.
+
+`SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as Nombre, E.nif FROM empleado as E LEFT JOIN departamento as D ON E.id_departamento = D.id;`
+
+![alt text](image-37.png)
+
+8. Devuelve un listado con los datos de los empleados que trabajan en el
+departamento de Sistemas, Contabilidad o I+D. Ordena el resultado
+alfabéticamente.
+
+`SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as Nombre, E.nif FROM empleado as E LEFT JOIN departamento as D ON E.id_departamento = D.id WHERE D.nombre IN ('Sistemas','Contabilidad','I+D') ORDER BY nombre;`
+
+![alt text](image-38.png)
+
+
+9. Devuelve una lista con el nombre de los empleados que tienen los
+departamentos que no tienen un presupuesto entre 100000 y 200000 euros.
+
+`SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as Nombre, E.nif FROM empleado as E LEFT JOIN departamento as D ON E.id_departamento = D.id WHERE D.presupuesto < 100000 OR D.Presupuesto > 200000;`
+
+![alt text](image-39.png)
+
+
+10. Devuelve un listado con el nombre de los departamentos donde existe
+algún empleado cuyo segundo apellido sea NULL. Tenga en cuenta que no
+debe mostrar nombres de departamentos que estén repetidos.
+
+`SELECT D.id,D.nombre FROM departamento AS D INNER JOIN empleado as E ON D.id=E.id_departamento WHERE E.apellido2 IS NULL;`
+
+![alt text](image-40.png)
+
+Consultas multitabla (Composición externa)
+Resuelva todas las consultas utilizando las cláusulas LEFT JOIN y RIGHT JOIN.
+1. Devuelve un listado con todos los empleados junto con los datos de los
+departamentos donde trabajan. Este listado también debe incluir los
+empleados que no tienen ningún departamento asociado.
+
+`SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as Nombre, E.nif,D.nombre N_Departamento,D.presupuesto,D.gastos FROM empleado as E LEFT JOIN departamento as D ON E.id_departamento = D.id;`
+
+![alt text](image-41.png)
+
+2. Devuelve un listado donde sólo aparezcan aquellos empleados que no
+tienen ningún departamento asociado.
+
+`SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as Nombre, E.nif,D.nombre as N_Departamento,D.presupuesto,D.gastos FROM empleado as E LEFT JOIN departamento as D ON E.id_departamento = D.id WHERE E.id_departamento IS NULL;`
+
+![alt text](image-42.png)
+
+3. Devuelve un listado donde sólo aparezcan aquellos departamentos que no
+tienen ningún empleado asociado.
+
+`SELECT D.nombre as N_Departamento,D.presupuesto,D.gastos FROM empleado as E RIGHT JOIN departamento as D ON E.id_departamento = D.id WHERE E.id_departamento IS NULL;`
+
+![alt text](image-43.png)
+
+4. Devuelve un listado con todos los empleados junto con los datos de los
+departamentos donde trabajan. El listado debe incluir los empleados que no
+tienen ningún departamento asociado y los departamentos que no tienen
+ningún empleado asociado. Ordene el listado alfabéticamente por el
+nombre del departamento.
+
+`SELECT T.NombreEm, T.nif,T.nombre as N_Departamento,T.presupuesto,T.gastos FROM (SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as NombreEm, E.nif, D.nombre,D.Presupuesto,D.gastos FROM empleado as E LEFT JOIN departamento as D ON E.id_departamento = D.id ORDER BY D.nombre) AS T UNION ALL (SELECT NULL,NUll,departamento.nombre as N_Departamento,departamento.presupuesto,departamento.gastos FROM departamento LEFT JOIN empleado ON empleado.id_departamento = departamento.id WHERE empleado.id_departamento IS NUll ORDER BY departamento.nombre)ORDER BY N_Departamento;`
+
+![alt text](image-44.png)
+
+5. Devuelve un listado con los empleados que no tienen ningún departamento
+asociado y los departamentos que no tienen ningún empleado asociado.
+Ordene el listado alfabéticamente por el nombre del departamento.
+
+`SELECT E.id, CONCAT_WS(' ',E.nombre,E.apellido1,E.apellido2) as NombreEm, E.id_departamento as N_Departamento, NUll as nombre
+FROM empleado as E 
+LEFT JOIN departamento AS D ON E.id_departamento = D.id 
+WHERE E.id_departamento IS NULL
+UNION ALL
+SELECT NULL AS id, NULL as NombreEm, D.id as N_Departamento, D.nombre 
+FROM departamento AS D 
+LEFT JOIN empleado as E ON D.id = E.id_departamento 
+WHERE E.id_departamento IS NULL ORDER BY N_Departamento;`
+
+![alt text](image-45.png)
+
+Consultas resumen
+1. Calcula la suma del presupuesto de todos los departamentos.
+
+    `SELECT sum(presupuesto) AS Total_Presupuesto FROM departamento;`
+
+    ![alt text](image-46.png)
+
+2. Calcula la media del presupuesto de todos los departamentos.
+
+`SELECT ROUND(AVG(presupuesto),2) AS AVG_Presupuesto FROM departamento;`
+
+![alt text](image-47.png)
+
+3. Calcula el valor mínimo del presupuesto de todos los departamentos.
+
+`SELECT nombre,presupuesto AS Menor_Presupuesto 
+FROM departamento 
+WHERE presupuesto = (SELECT MIN(presupuesto) FROM departamento);
+`
+![alt text](image-48.png)
+
+
+4. Calcula el nombre del departamento y el presupuesto que tiene asignado,
+del departamento con menor presupuesto.
+
+`SELECT nombre,presupuesto AS Menor_Presupuesto 
+FROM departamento 
+WHERE presupuesto = (SELECT MIN(presupuesto) FROM departamento);
+`
+
+![alt text](image-49.png)
+
+5. Calcula el valor máximo del presupuesto de todos los departamentos.
+
+`SELECT MAX(presupuesto) FROM departamento;`
+
+![alt text](image-50.png)
+
+6. Calcula el nombre del departamento y el presupuesto que tiene asignado,
+del departamento con mayor presupuesto.
+
+`SELECT nombre,presupuesto AS Mayor_Presupuesto 
+FROM departamento 
+WHERE presupuesto = (SELECT MAX(presupuesto) FROM departamento);
+`
+
+![alt text](image-51.png)
+
+7. Calcula el número total de empleados que hay en la tabla empleado.
+
+`SELECT count(id) FROM empleado;`
+
+![alt text](image-52.png)
+
+8. Calcula el número de empleados que no tienen NULL en su segundo
+apellido.
+
+`SELECT count(id) as NULL_Apellido2 FROM empleado WHERE apellido2 is NULL;`
+
+![alt text](image-53.png)
+
+9. Calcula el número de empleados que hay en cada departamento. Tienes que
+devolver dos columnas, una con el nombre del departamento y otra con el
+número de empleados que tiene asignados.
+10. Calcula el nombre de los departamentos que tienen más de 2 empleados. El
+resultado debe tener dos columnas, una con el nombre del departamento y
+otra con el número de empleados que tiene asignados.
+11. Calcula el número de empleados que trabajan en cada uno de los
+departamentos. El resultado de esta consulta también tiene que incluir
+aquellos departamentos que no tienen ningún empleado asociado.
+12. Calcula el número de empleados que trabajan en cada unos de los
+departamentos que tienen un presupuesto mayor a 200000 euros.
