@@ -372,10 +372,9 @@ WHERE presupuesto = (SELECT MIN(presupuesto) FROM departamento);
 4. Calcula el nombre del departamento y el presupuesto que tiene asignado,
 del departamento con menor presupuesto.
 
-`SELECT nombre,presupuesto AS Menor_Presupuesto 
-FROM departamento 
-WHERE presupuesto = (SELECT MIN(presupuesto) FROM departamento);
-`
+`SELECT nombre,presupuesto AS Menor_Presupuesto  
+FROM departamento  
+WHERE presupuesto = (SELECT MIN(presupuesto) FROM departamento);  `
 
 ![alt text](image-49.png)
 
@@ -411,11 +410,115 @@ apellido.
 9. Calcula el número de empleados que hay en cada departamento. Tienes que
 devolver dos columnas, una con el nombre del departamento y otra con el
 número de empleados que tiene asignados.
+
+`SELECT D.nombre, count(E.id_departamento) FROM departamento D INNER JOIN empleado E ON D.id = E.id_departamento GROUP BY E.id_departamento;`
+
+![alt text](image-54.png)
 10. Calcula el nombre de los departamentos que tienen más de 2 empleados. El
 resultado debe tener dos columnas, una con el nombre del departamento y
 otra con el número de empleados que tiene asignados.
+
+`SELECT D.nombre, count(E.id_departamento) as PersonasByDep FROM departamento D INNER JOIN empleado E ON D.id = E.id_departamento GROUP BY E.id_departamento HAVING PersonasByDep > 2;`
+
+![alt text](image-55.png)
+
 11. Calcula el número de empleados que trabajan en cada uno de los
 departamentos. El resultado de esta consulta también tiene que incluir
 aquellos departamentos que no tienen ningún empleado asociado.
+
+`SELECT D.nombre, count(E.id_departamento) FROM departamento D LEFT JOIN empleado E ON D.id = E.id_departamento GROUP BY D.nombre;`
+
+![alt text](image-56.png)
+
+
 12. Calcula el número de empleados que trabajan en cada unos de los
 departamentos que tienen un presupuesto mayor a 200000 euros.
+
+`SELECT D.nombre, count(E.id_departamento),D.presupuesto FROM departamento D INNER JOIN empleado E ON D.id = E.id_departamento WHERE presupuesto > 200000 GROUP BY E.id_departamento;`
+
+![alt text](image-57.png)
+
+Subconsultas
+Con operadores básicos de comparación
+1. Devuelve un listado con todos los empleados que tiene el departamento
+de Sistemas. (Sin utilizar INNER JOIN).
+`SELECT CONCAT_WS(' ', E.nombre,E.apellido1,E.apellido2) as NombreEmp FROM empleado E WHERE id_departamento = (SELECT D.id FROM departamento D WHERE D.nombre = 'Sistemas');`
+
+![alt text](image-58.png)
+
+2. Devuelve el nombre del departamento con mayor presupuesto y la cantidad
+que tiene asignada.
+
+`SELECT nombre, presupuesto FROM departamento ORDER BY presupuesto DESC LIMIT 1;`
+
+![alt text](image-59.png)
+
+
+3. Devuelve el nombre del departamento con menor presupuesto y la cantidad
+que tiene asignada.
+
+`SELECT nombre, presupuesto FROM departamento ORDER BY presupuesto ASC LIMIT 1;`
+
+![alt text](image-60.png)
+
+Subconsultas con ALL y ANY
+4. Devuelve el nombre del departamento con mayor presupuesto y la cantidad
+que tiene asignada. Sin hacer uso de MAX, ORDER BY ni LIMIT.
+
+`SELECT nombre, presupuesto FROM departamento WHERE presupuesto >= ALL(SELECT presupuesto FROM departamento);`
+
+![alt text](image-61.png)
+
+5. Devuelve el nombre del departamento con menor presupuesto y la cantidad
+que tiene asignada. Sin hacer uso de MIN, ORDER BY ni LIMIT.
+
+`SELECT nombre, presupuesto FROM departamento WHERE presupuesto <= ALL(SELECT presupuesto FROM departamento);`
+
+![alt text](image-62.png)
+
+6. Devuelve los nombres de los departamentos que tienen empleados
+asociados. (Utilizando ALL o ANY).
+
+`SELECT CONCAT_WS(' ', E.nombre,E.apellido1,E.apellido2) NombreEmp  ,E.id_departamento FROM empleado E WHERE E.id_departamento = ANY (SELECT id FROM departamento);`
+
+![alt text](image-63.png)
+
+7. Devuelve los nombres de los departamentos que no tienen empleados
+asociados. (Utilizando ALL o ANY).
+
+`SELECT D.id,D.nombre FROM departamento D WHERE NOT D.id = ANY (SELECT E.id_departamento FROM empleado E WHERE E.id_departamento IS NOT NUll);`
+
+`SELECT D.id,D.nombre FROM departamento D WHERE NOT D.id = ANY (SELECT E.id_departamento FROM empleado E WHERE E.id_departamento IS NOT NUll);`
+
+![alt text](image-64.png)
+
+Subconsultas con IN y NOT IN
+8. Devuelve los nombres de los departamentos que tienen empleados
+asociados. (Utilizando IN o NOT IN).
+
+`SELECT D.id,D.nombre FROM departamento D WHERE D.id IN (SELECT E.id_departamento FROM empleado E WHERE E.id_departamento IS NOT NULL);`
+
+![alt text](image-65.png)
+
+9. Devuelve los nombres de los departamentos que no tienen empleados
+asociados. (Utilizando IN o NOT IN).
+
+SELECT D.id,D.nombre FROM departamento D WHERE D.id NOT IN (SELECT E.id_departamento FROM empleado E WHERE E.id_departamento IS  not NULL);
+
+![alt text](image-66.png)
+
+Subconsultas con EXISTS y NOT EXISTS
+10. Devuelve los nombres de los departamentos que tienen empleados
+asociados. (Utilizando EXISTS o NOT EXISTS).
+
+
+`SELECT D.id,D.nombre FROM departamento D WHERE EXISTS(SELECT 1 FROM empleado E WHERE E.id_departamento = D.id);`
+
+![alt text](image-67.png)
+
+11. Devuelve los nombres de los departamentos que tienen empleados
+asociados. (Utilizando EXISTS o NOT EXISTS).
+
+`SELECT D.id,D.nombre FROM departamento D WHERE NOT EXISTS(SELECT 1 FROM empleado E WHERE E.id_departamento = D.id);`
+
+![alt text](image-68.png)
